@@ -5,11 +5,8 @@ addpath('../coursedata')
 
 
 
-%nb_training_data = [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8];
-nb_training_data = [0.8];
-
-%feature_size = [5 6 7 8 9 10 11 12 13];
-feature_size = [7 8 9 10 11 12];
+nb_training_data = [0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8];
+feature_size = [5 6 7 8 9 10 11 12 13];
 test_error = zeros(length(nb_training_data) , length(feature_size));
 train_error = zeros(length(nb_training_data) , length(feature_size));
 test_variance = zeros(length(nb_training_data) , length(feature_size));
@@ -37,7 +34,7 @@ a = prnist_data*im_box([],0);
 % add a bounding box to the images to make it square.
 a = a*im_box([],0,1);
 % resample the images.
-method = 'bicubic';% 'nearest'; % To test: bilinear and bicubic.
+method = 'nearest';% 'nearest'; % To test: bilinear and bicubic.
 a = a*im_resize([],[feat_size,feat_size], method);
 % add rows and columns to have a square image.
 a = a*im_box(1,0);
@@ -67,17 +64,17 @@ for fract_training=nb_training_data
 
 % TO DO: test more classifiers, ex. combined classifiers, neural networks.
 classifiers = {ldc, qdc, fisherc,nmc, knnc, parzenc, svc, loglc}; 
-classifier = 'svc';
+classifier = 'parzenc';
 
 %% ------  Evaluation
 %Last loop for the error
-nb_repetitions = 1; % In order to compute mean error and variance
+nb_repetitions = 10; % In order to compute mean error and variance
 error_test_temp = [];
 error_train_temp = [];
 for repet=1:nb_repetitions
     % Classifier training
     [train_set , test_set, i_train, i_test] = gendat(dataset,fract_training); % Replace dataset by feature_dataset later. 
-    W = svc(train_set,proxm('p',1) );
+    W = parzenc(train_set);
     length(train_set)
     error_test_temp = [error_test_temp testc(test_set*W)];
     error_train_temp = [error_train_temp testc(train_set*W)];    
@@ -121,8 +118,8 @@ surf(train_variance)
     ylabel('nb_data')
 rotate3d;
 
-save(['error_pixel_' classifier '_linear.mat'], 'test_error', 'test_variance', 'train_error', 'train_variance');
-savefig(figure_saver , ['error_pixel_' classifier '_linear.fig']);
+save(['error_pixel_' classifier '_' method '.mat'], 'test_error', 'test_variance', 'train_error', 'train_variance');
+savefig(figure_saver , ['error_pixel_' classifier '_' method '.fig']);
 close(figure_saver);
 
 % Feature curve
