@@ -6,14 +6,18 @@ addpath('../coursedata')
 % In this scenario we have 10 objects for training. And we will take 240
 % objects for testing (for each class).
 
-feature_size = [5 6 7 8 9 10 11 12 13 14 15 16 17];
+variance_fraction = [0.5 0.6 0.7 0.8 0.9 0.95 0.97];
+%variance_fraction = [0.7 0.8 0.9 0.95];
+%feature_size = [5 6 7 8 9 10 11 12 13 14 15 16 17];
 %feature_size = [12 15 18 20 22 25 30 35];
 %feature_size = [18 19 20 21 22];
 %feature_size = [23 24 25];
-test_error = zeros(length(feature_size),1);
-train_error = zeros(length(feature_size),1);
-test_variance = zeros(length(feature_size),1);
-train_variance = zeros(length(feature_size),1);
+feature_size = [6 8 10 12 14 16 18 20 22];
+%feature_size = [4 6 8];
+test_error = zeros(length(feature_size),length(variance_fraction));
+train_error = zeros(length(feature_size),length(variance_fraction));
+test_variance = zeros(length(feature_size),length(variance_fraction));
+train_variance = zeros(length(feature_size),length(variance_fraction));
 
 
 %% ----- Dataset preparation
@@ -33,7 +37,6 @@ for feat_size = feature_size
 
 % Second loop to choose the number of training data
 
-disp(['Config: nb_feature: ' num2str(feat_size) ])
 
 %% ------ Classifiers preparation
 
@@ -46,6 +49,10 @@ classifier = 'ldc';
 nb_repetitions = 10; % In order to compute mean error and variance
 error_test_temp = [];
 error_train_temp = [];
+frac = 1;
+for varFrac = variance_fraction
+    disp(['Config: nb_feature: ' num2str(feat_size) ' Var frac: ' num2str(varFrac)])
+
 for repet=1:nb_repetitions
     %Data loading
     load_interval = 4; % depends on the size of the dataset we want.
@@ -55,7 +62,7 @@ for repet=1:nb_repetitions
     % add a bounding box to the images to make it square.
     a = a*im_box([],0,1);
     % resample the images.
-    method = 'nearest';% 'nearest'; % To test: bilinear and bicubic.
+    method = 'bilinear';% 'nearest'; % To test: bilinear and bicubic.
     a = a*im_resize([],[feat_size,feat_size], method);
     % add rows and columns to have a square image.
     a = a*im_box(1,0);
@@ -65,24 +72,22 @@ for repet=1:nb_repetitions
     
     % Classifier training
     [train_set , test_set, i_train, i_test] = gendat(dataset,[10,10,10,10,10,10,10,10,10,10]); % Replace dataset by feature_dataset later. 
-    W = parzenc(train_set );
-    disp(['train set size ' num2str(size(train_set))])
+    s = scalem([],'variance')*pcam([],varFrac)*knnc;
+    W = train_set*s;
+    %disp(['train set size ' num2str(size(train_set))])
     error_test_temp = [error_test_temp testc(test_set*W)];
     error_train_temp = [error_train_temp testc(train_set*W)];    
 
 end
-test_error(idx_feat) = mean(error_test_temp);
-train_error(idx_feat) = mean(error_train_temp);
-test_variance(idx_feat) = var(error_test_temp);
-train_variance(idx_feat) = var(error_train_temp);
-
+test_error(idx_feat,frac) = mean(error_test_temp);
+train_error(idx_feat,frac) = mean(error_train_temp);
+test_variance(idx_feat,frac) = var(error_test_temp);
+train_variance(idx_feat,frac) = var(error_train_temp);
+frac= frac +1;
+end
 end
 
-disp(test_error)
-disp(test_variance)
-disp(train_error)
-disp(train_variance)
-%{
+
 str_title=sprintf('Error %s', classifier);
 figure_saver(1) = figure('Name',str_title,'NumberTitle','on');
 subplot(2,2,1)
@@ -116,7 +121,7 @@ rotate3d;
 save(['error_pixel_' classifier '_linear.mat'], 'test_error', 'test_variance', 'train_error', 'train_variance');
 savefig(figure_saver , ['error_pixel_' classifier '_linear.fig']);
 close(figure_saver);
-%}
+
 % Feature curve
 %{
 fraction_training = 0.8;
