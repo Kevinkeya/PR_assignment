@@ -11,12 +11,12 @@ addpath('coursedata')
 
 
 %%
-% Useless
+% This is for "vl_hog"... 
 
 % http://www.vlfeat.org/download.html
 % Only need to run this at first time when you start up MATLAB
+% Please uncomment the following two lines.
 % run('vlfeat-0.9.20/toolbox/vl_setup')
-% This should run without error
 % vl_version verbose
 
 %%
