@@ -22,11 +22,16 @@ addpath('coursedata')
 %%
 %Set scenario
 % scenario1: 10*200 in this case
-scenario=1;
-online=true;
+scenario=2;
 
+%Set online test, true if you want online test.
+online=true;
+method=2
+
+%Default setting
 load_interval=5;
 loadRatio=5;
+
 
 % scenario2: 10*10 in this case
 if scenario==2
@@ -34,63 +39,83 @@ if scenario==2
     loadRatio=100;
 end
 
+% Using to store time, can be any dimension array.
 t=zeros(7,1);
-tic;
 
+%start counting time
+tic;
 
 % prnist_data = prnist([0:9],[1:load_interval:1000]);
 prnist_data = prnist([0:9],[1:1000/loadRatio]);
 
-% Generating HOC as the dataset
-
+% Generating dataset with HOG as features
 dataset=my_rep(prnist_data);
+
+% First time
 t(1)=toc;
 
 %Here you can choose different classfiers
 
 
 % s= svc(proxm('p',1) );
-
-% s=qdc();
-
+% s= qdc();
 s = parzenc();
-% s= svc(proxm('p',1) );
 % s=loglc();
 % s= ldc();
+
+% s = knnc([],2);
+
 W = dataset*s;
-% t(2)=toc-t(1);
+
+% Second time gap, usually as the training time
+t(2)=toc-t(1);
 
 
-% s2 = fisherc();
+
+% Pick up one s2 if you want
+s2 = fisherc();
 % s2=loglc();
-% s2=nmc();
-% W2 = dataset*s2;
-% t(3)=toc-t(2);
-% s3 = knnc([],2);
+% s2= nmc();
+W2 = dataset*s2;
+
+% Time agian
+t(3)=toc-t(2);
+
+% Pick up one s3 if you want
+s3 = knnc([],2);
 % s3=qdc();
-% W3 = dataset*s3;
-% t(4)=toc-t(3);
-
-% Combined classfier
-% W_array=[W W2 W3];
-% cvote=W_array*votec;%votec
-% cmax=W_array*maxc;
+W3 = dataset*s3;
+t(4)=toc-t(3);
 
 
-if online == false
-    %Test Error
-    error1=nist_eval('my_rep',W,100)
-    % t(5)=toc-t(4);
-    % error2=nist_eval('my_rep',W2,100)
-    % t(6)=toc-t(5);
-    % error3=nist_eval('my_rep',W3,100)
-    % t(7)=toc-t(6);
-    % vote_error=nist_eval('my_rep',cvote,100)
-    % max_error=nist_eval('my_rep',cmax,100)
-    % error_test_temp =  min(vote_error,max_error)
-else
-    liveDate=getLiveDataHOG();
-    error1=testc(liveDate*W);
+% Combined classfier setting if you want
+W_array=[W W2 W3];
+cvote=W_array*votec;%votec
+cmax=W_array*maxc;
+
+
+
+%Test Error from benchwork
+error1=nist_eval('my_rep',W,100);
+t(5)=toc-t(4);
+error2=nist_eval('my_rep',W2,100);
+t(6)=toc-t(5);
+error3=nist_eval('my_rep',W3,100);
+t(7)=toc-t(6);
+votec_error=nist_eval('my_rep',cvote,100);
+maxc_error=nist_eval('my_rep',cmax,100);
+error_combined =  min(votec_error,maxc_error);
+
+% Test error from Live test.
+if online == true
+    liveDate=getLiveDataHOG(method);
+    errorLive1=testc(liveDate*W);
+    errorLive2=testc(liveDate*W2);
+    errorLive3=testc(liveDate*W3);
+    votec_errorLive=testc(liveDate*cvote);
+    maxc_errorLive=testc(liveDate*cmax);
+    error_combinedLive =  min(votec_errorLive,maxc_errorLive);
+   
 end
 
 % To remove waiting bar
