@@ -10,7 +10,8 @@ end
 
 % figure,imshow(digitColumn{1});
 
-currentNum=4;
+
+currentNum=5;
 
 
 readIndex=currentNum+1;
