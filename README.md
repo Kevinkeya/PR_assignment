@@ -12,8 +12,8 @@ This is main function of using HOG extraing features, the main function, can be 
 
 ### my_rep.m
 
-This is the function to extract HOG. Three methods. Please try method 1 or 3. 
+This is the function to extract HOG. Three methods. Usually method 2 is the most stable one.
 
 ### HOG.m
 
-This is another functino for `HOG()`. Pretty useless because of the high error. Ignore it please. 
+This is another functinon for `HOG()`. Pretty useless because of the high error. But sometimes if you have an error of 90%, try this maybe. 
