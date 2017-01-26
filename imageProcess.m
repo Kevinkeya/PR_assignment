@@ -1,5 +1,5 @@
 % Function for preprocess our live test picture, only for one single digit
-function [img] = imageProcess(number,i)
+function [img] = imageProcess(number,i,feat_size)
 % First read the digit pic based on input
 img=imread(strcat('digit/single/black_num',int2str(number),'_',int2str(i),'.jpeg'));
 
@@ -17,7 +17,7 @@ img=~img;
 img=makeSquare(img);
 % figure,imshow(img,'InitialMagnification','fit');
 % Resize it
-img=imresize(img,[32,32]);
+img=imresize(img,[feat_size,feat_size]);
 img=imbinarize(img);
 % Uncomment it if you want to see the graph
 % figure,imshow(img,'InitialMagnification','fit');

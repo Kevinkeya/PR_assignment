@@ -1,4 +1,4 @@
-function [dataset] = my_rep_pixel_nist(m)
+function [dataset] = my_rep_imfeature_nist(m)
 
 addpath('/prtools')
 addpath('/coursedata')
@@ -19,8 +19,8 @@ a = a*im_box([],0,1);
 method = 'bicubic';% 'nearest'; % To test: bilinear and bicubic.  % Change method here!
 a = a*im_resize([],[feat_size,feat_size], method);
 % add rows and columns to have a square image.
-% a = a*im_box(1,0);
+a = a*im_box(1,0);
 
 
 dataset = prdataset(a, getlabels(a));
-% dataset = im_features(dataset, 'all'); % Remove if training on pixels!
+dataset = im_features(dataset, 'all');

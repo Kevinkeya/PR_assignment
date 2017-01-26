@@ -26,11 +26,15 @@ scenario=1;
 
 %Set online test, true if you want online test.
 live=true;
-method=1
+
+feat_size=64;
+
+%imfeature  or pixel
+liveDataType=string('imfeature');
 
 %Default setting
 load_interval=5;
-loadRatio=5;
+loadRatio=10/8;
 
 
 % scenario2: 10*10 in this case
@@ -49,7 +53,12 @@ tic;
 prnist_data = prnist([0:9],[1:1000/loadRatio]);
 
 % Generating dataset with HOG as features
-dataset=my_rep_pixel_nist(prnist_data);
+ dataset=[];
+if liveDataType=='imfeature'
+    dataset=my_rep_imfeature_nist(prnist_data);
+else
+    dataset=my_rep_pixel_nist(prnist_data);
+end
 
 % First time
 t(1)=toc;
@@ -61,12 +70,13 @@ t(1)=toc;
 % Choose!!!
 
 % With PCA:
-%varFrac = 0.97;
-%s = scalem([],'variance')*pcam([],varFrac)*ldc(); 
-%W = dataset*s;
+% varFrac = 0.97;
+% s = scalem([],'variance')*pcam([],varFrac)*ldc();
+% W = dataset*s;
 
 % Without PCA
-s = knnc(); 
+% s = ldc();
+s = knnc([])
 W = dataset*s;
 
 
@@ -76,20 +86,23 @@ W = dataset*s;
 t(2)=toc-t(1);
 
 
-
+error1=0;
 %Test Error from benchwork
-error1=nist_eval('my_rep_pixel_nist',W,100);
-
+if liveDataType=='imfeature'
+    error1=nist_eval('my_rep_imfeature_nist',W,100);
+else
+     error1=nist_eval('my_rep_pixel_nist',W,100);   
+end
 % Test error from Live test.
 if live == true
-    liveDate=getLiveData(method);
+    liveDate=getLiveData(feat_size,liveDataType);
     errorLive1=testc(liveDate*W);
-  %  errorLive2=testc(liveDate*W2);
-  %  errorLive3=testc(liveDate*W3);
-  %  votec_errorLive=testc(liveDate*cvote);
-  %  maxc_errorLive=testc(liveDate*cmax);
-  %  error_combinedLive =  min(votec_errorLive,maxc_errorLive);
-   
+    %     errorLive2=testc(liveDate*W2);
+    %     errorLive3=testc(liveDate*W3);
+    %     votec_errorLive=testc(liveDate*cvote);
+    %     maxc_errorLive=testc(liveDate*cmax);
+    %     error_combinedLive =  min(votec_errorLive,maxc_errorLive);
+    
 end
 
 % To remove waiting bar
