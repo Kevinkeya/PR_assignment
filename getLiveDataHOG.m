@@ -11,7 +11,7 @@ hogAll=[];
 
 for number=0:9
     for i=1:10
-        digit{number+1,i}=imageProcess(number,i);
+        digit{number+1,i}=imageProcess(number,i,32);
         
         %         Same method should be chosen as my_rep, since feature dimension
         %         should be agreed with each other
