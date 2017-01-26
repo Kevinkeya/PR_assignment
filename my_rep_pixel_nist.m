@@ -10,7 +10,7 @@ a=m;
 
 
 
-feat_size = 20;  % Change size of the image here!
+feat_size = 11;  % Change size of the image here!
 
 a = m*im_box([],0);
 % add a bounding box to the images to make it square.
@@ -23,4 +23,4 @@ a = a*im_box(1,0);
 
 
 dataset = prdataset(a, getlabels(a));
-dataset = im_features(dataset, 'all'); % Remove if training on pixels!
+% dataset = im_features(dataset, 'all'); % Remove if training on pixels!

@@ -7,10 +7,9 @@ addpath('../coursedata')
 
 nb_training_data = [0.5 0.6 0.7 0.8];
 %nb_training_data = [0.8];
-%variance_fraction = [10 15 20 30 40];
-variance_fraction = [0.7 0.8 0.9 0.95 0.97];
+variance_fraction = [1];
+%variance_fraction = [0.7 0.8 0.9 0.95 0.97];
 %feature_size = [5 6 7 8 9 10 11 12 13];
-%feature_size = [7 8 9 10 11 12];
 feature_size = [64];
 test_error = zeros(length(nb_training_data) , length(variance_fraction));
 train_error = zeros(length(nb_training_data) , length(variance_fraction));
@@ -82,13 +81,25 @@ error_train_temp = [];
 for repet=1:nb_repetitions
     % Classifier training
     [train_set , test_set, i_train, i_test] = gendat(dataSetFeatures,fract_training); % Replace dataset by feature_dataset later. 
+    
+    %Without PCA, with feature scaling
+    scaling_mapping = scalem(train_set,'variance');
+    W = nmc(train_set*scaling_mapping);
+    %disp(['train set size ' num2str(size(train_set))])
+    error_test_temp = [error_test_temp testc(test_set*scaling_mapping*W)];
+    error_train_temp = [error_train_temp testc(train_set*scaling_mapping*W)];  
+  
+    
+    %{
+    %With PCAM
     %Preparation of the scaling
     s = scalem([],'variance')*pcam([],varFrac)*parzenc;
     W = train_set*s;
     length(train_set)
     error_test_temp = [error_test_temp testc(test_set*W)];
     error_train_temp = [error_train_temp testc(train_set*W)];    
-
+    %}
+    
 end
 test_error(idx_data, frac) = mean(error_test_temp);
 train_error(idx_data, frac) = mean(error_train_temp);

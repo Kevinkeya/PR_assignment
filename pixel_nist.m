@@ -22,10 +22,10 @@ addpath('coursedata')
 %%
 %Set scenario
 % scenario1: 10*200 in this case
-scenario=2;
+scenario=1;
 
 %Set online test, true if you want online test.
-live=false;
+live=true;
 method=1
 
 %Default setting
@@ -61,12 +61,12 @@ t(1)=toc;
 % Choose!!!
 
 % With PCA:
-varFrac = 0.97;
-s = scalem([],'variance')*pcam([],varFrac)*ldc(); 
-W = dataset*s;
+%varFrac = 0.97;
+%s = scalem([],'variance')*pcam([],varFrac)*ldc(); 
+%W = dataset*s;
 
 % Without PCA
-s = ldc(); 
+s = knnc(); 
 W = dataset*s;
 
 
@@ -82,13 +82,13 @@ error1=nist_eval('my_rep_pixel_nist',W,100);
 
 % Test error from Live test.
 if live == true
-    liveDate=getLiveDataHOG(method);
+    liveDate=getLiveData(method);
     errorLive1=testc(liveDate*W);
-    errorLive2=testc(liveDate*W2);
-    errorLive3=testc(liveDate*W3);
-    votec_errorLive=testc(liveDate*cvote);
-    maxc_errorLive=testc(liveDate*cmax);
-    error_combinedLive =  min(votec_errorLive,maxc_errorLive);
+  %  errorLive2=testc(liveDate*W2);
+  %  errorLive3=testc(liveDate*W3);
+  %  votec_errorLive=testc(liveDate*cvote);
+  %  maxc_errorLive=testc(liveDate*cmax);
+  %  error_combinedLive =  min(votec_errorLive,maxc_errorLive);
    
 end
 
