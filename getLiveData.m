@@ -12,6 +12,7 @@ for number=0:9
     for i=1:10
         digit{number+1,i}=imageProcess(number,i,feat_size);
         %         imshow(digit{number+1,i})
+
     end
     
 end

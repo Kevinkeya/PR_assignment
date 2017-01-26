@@ -7,7 +7,7 @@ addpath('../coursedata')
 % objects for testing (for each class).
 
 feature_size = [5 6 7 8 9 10 11 12 13 14 15 16 17];
-%feature_size = [12 15 18 20 22 25 30 35];
+feature_size = [5 10 15];
 %feature_size = [18 19 20 21 22];
 %feature_size = [23 24 25];
 test_error = zeros(length(feature_size),1);
@@ -65,7 +65,7 @@ for repet=1:nb_repetitions
     
     % Classifier training
     [train_set , test_set, i_train, i_test] = gendat(dataset,[10,10,10,10,10,10,10,10,10,10]); % Replace dataset by feature_dataset later. 
-    W = parzenc(train_set );
+    W = train_set*svc(proxm('s',1));
     disp(['train set size ' num2str(size(train_set))])
     error_test_temp = [error_test_temp testc(test_set*W)];
     error_train_temp = [error_train_temp testc(train_set*W)];    

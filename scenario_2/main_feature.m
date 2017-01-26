@@ -7,8 +7,8 @@ addpath('../coursedata')
 % objects for testing (for each class).
 
 %feature_size = [5 6 7 8 9 10 11 12 13 14 15 16 17];
-feature_size = [15 20 25 30 35 40 45];
-%feature_size = [45];
+feature_size = [45 50 60 70];
+%feature_size = [10];
 %feature_size = [12 14 16 18];
 test_error = zeros(length(feature_size),1);
 train_error = zeros(length(feature_size),1);
@@ -56,7 +56,7 @@ for repet=1:nb_repetitions
     % add a bounding box to the images to make it square.
     a = a*im_box([],0,1);
     % resample the images.
-    method = 'bilinear';% 'nearest'; % To test: bilinear and bicubic.
+    method = 'bicubic';% 'nearest'; % To test: bilinear and bicubic.
     a = a*im_resize([],[feat_size,feat_size], method);
     % add rows and columns to have a square image.
     a = a*im_box(1,0);
@@ -68,11 +68,25 @@ for repet=1:nb_repetitions
     
     % Classifier training
     [train_set , test_set, i_train, i_test] = gendat(dataSetFeatures,[10,10,10,10,10,10,10,10,10,10]); % Replace dataset by feature_dataset later. 
+    %train_set = train_set*scalem(train_set,'variance');
+    %test_set = test_set*scalem(train_set,'variance');
     
-    W = loglc(train_set);
+    %{
+    % Feature scaling
+    scaling_mapping = scalem(train_set,'variance');
+    W = train_set*scaling_mapping*svc(proxm('r',1));
+    %disp(['train set size ' num2str(size(train_set))])
+    error_test_temp = [error_test_temp testc(test_set*scaling_mapping*W)];
+    error_train_temp = [error_train_temp testc(train_set*scaling_mapping*W)];  
+    %}
+    
+     
+    %No scaling
+    W = train_set*svc(proxm('r',1));
     %disp(['train set size ' num2str(size(train_set))])
     error_test_temp = [error_test_temp testc(test_set*W)];
-    error_train_temp = [error_train_temp testc(train_set*W)];    
+    error_train_temp = [error_train_temp testc(train_set*W)];
+    
 
 end
 test_error(idx_feat) = mean(error_test_temp);

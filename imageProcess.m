@@ -18,7 +18,9 @@ img=makeSquare(img);
 % figure,imshow(img,'InitialMagnification','fit');
 % Resize it
 img=imresize(img,[feat_size,feat_size]);
+
 % img=imbinarize(img);
+
 % Uncomment it if you want to see the graph
 % figure,imshow(img,'InitialMagnification','fit');
 end

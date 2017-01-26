@@ -11,7 +11,7 @@ addpath('../coursedata')
 variance_fraction = [0.8 0.9 0.97];
 %variance_fraction = [0.97];
 %feature_size = [5 6 7 8 9 10 11 12 13 14 15 16 17];
-feature_size = [10 15 20 25];
+feature_size = [10 15 20 30 40 50 60];
 %feature_size = [8];
 
 %feature_size = [12 14 16 18];
@@ -75,7 +75,7 @@ for repet=1:nb_repetitions
     
     % Classifier training
     [train_set , test_set, i_train, i_test] = gendat(dataSetFeatures,[10,10,10,10,10,10,10,10,10,10]); % Replace dataset by feature_dataset later. 
-    s = scalem([],'variance')*pcam([],varFrac)*knnc;
+    s = scalem([],'variance')*pcam([],varFrac)*svc(proxm('r',1));
     W = train_set*s;
     %disp(['train set size ' num2str(size(train_set))])
     error_test_temp = [error_test_temp testc(test_set*W)];
