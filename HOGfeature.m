@@ -22,11 +22,11 @@ addpath('coursedata')
 %%
 %Set scenario
 % scenario1: 10*200 in this case
-scenario=2;
+scenario=1;
 
 %Set online test, true if you want online test.
-online=true;
-method=2
+live=true;
+method=1
 
 %Default setting
 load_interval=5;
@@ -107,7 +107,7 @@ maxc_error=nist_eval('my_rep',cmax,100);
 error_combined =  min(votec_error,maxc_error);
 
 % Test error from Live test.
-if online == true
+if live == true
     liveDate=getLiveDataHOG(method);
     errorLive1=testc(liveDate*W);
     errorLive2=testc(liveDate*W2);

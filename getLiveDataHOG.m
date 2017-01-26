@@ -19,7 +19,6 @@ for number=0:9
             %     1.vl_hog
             cellSize=8;
             hog = vl_hog(single(digit{number+1,i}), cellSize, 'verbose','variant', 'dalaltriggs');
-            %     hog = vl_hog(single(arrayCell{i}), cellSize, 'verbose');
             hog = hog(:)';
             
         elseif method_num==2

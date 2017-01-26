@@ -6,9 +6,11 @@ img=imread(strcat('digit/single/black_num',int2str(number),'_',int2str(i),'.jpeg
 %Default setting was 1, but I think 2 looks better.
 se=strel('disk',1);
 %Reduce noise based on se setting
-img=imopen(img,se);
-% img=imclose(img,se);
 img=imerode(img,se);
+img=imopen(img,se);
+img=imclose(img,se);
+img=imdilate(img,se);
+
 % Makes black to white and white to black
 img=~img;
 % Make it square by filling up it with black blocks.
@@ -16,6 +18,7 @@ img=makeSquare(img);
 % figure,imshow(img,'InitialMagnification','fit');
 % Resize it
 img=imresize(img,[32,32]);
+img=imbinarize(img);
 % Uncomment it if you want to see the graph
 % figure,imshow(img,'InitialMagnification','fit');
 end
@@ -52,7 +55,7 @@ elseif yLength<xLength
     %      img=[black; m ;black]
     img=[zeros(topFillLength,xLength);m;zeros(bottomFillLength,xLength)];
 else
-    img=m;
+    img=double(m);
 end
 
 

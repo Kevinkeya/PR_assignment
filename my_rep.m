@@ -27,15 +27,15 @@ hogAll=[];
 
 for i = 1:length(arrayCell)
     arrayCell{i}=arrayCell{i}*im_resize([],[32,32]);
+
     %     1.vl_hog
-    %     cellSize=8;
-    %     hog = vl_hog(single(arrayCell{i}), cellSize, 'verbose','variant', 'dalaltriggs');
-    %     hog = vl_hog(single(arrayCell{i}), cellSize, 'verbose');
-    %     hog = hog(:)';
+        cellSize=8;
+        hog = vl_hog(single(arrayCell{i}), cellSize, 'verbose','variant', 'dalaltriggs');
+        hog = hog(:)';
     
     
     %     2.extractHOGFeatures build_in function
-    hog = extractHOGFeatures(single(arrayCell{i}), 'CellSize', [8 8]);
+%     hog = extractHOGFeatures(single(arrayCell{i}), 'CellSize', [8 8]);
     %     3. HOG Download code
     %         hog = HOG(arrayCell{i})';
     
