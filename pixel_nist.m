@@ -34,7 +34,7 @@ liveDataType=string('imfeature');
 
 %Default setting
 load_interval=5;
-loadRatio=10/8;
+loadRatio=5;
 
 
 % scenario2: 10*10 in this case
@@ -70,14 +70,14 @@ t(1)=toc;
 % Choose!!!
 
 % With PCA:
-% varFrac = 0.97;
-% s = scalem([],'variance')*pcam([],varFrac)*ldc();
-% W = dataset*s;
+varFrac = 0.97;
+s = scalem([],'variance')*pcam([],varFrac)*ldc();
+W = dataset*s;
 
 % Without PCA
-% s = ldc();
-s = knnc([])
-W = dataset*s;
+
+%s = ldc([])
+%W = dataset*s;
 
 
 

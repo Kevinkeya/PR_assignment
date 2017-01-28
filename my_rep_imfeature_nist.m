@@ -16,10 +16,10 @@ a = m*im_box([],0);
 % add a bounding box to the images to make it square.
 a = a*im_box([],0,1);
 % resample the images.
-method = 'bicubic';% 'nearest'; % To test: bilinear and bicubic.  % Change method here!
+method = 'bilinear';% 'nearest'; % To test: bilinear and bicubic.  % Change method here!
 a = a*im_resize([],[feat_size,feat_size], method);
 % add rows and columns to have a square image.
-a = a*im_box(1,0);
+% a = a*im_box(1,0);
 
 
 dataset = prdataset(a, getlabels(a));
